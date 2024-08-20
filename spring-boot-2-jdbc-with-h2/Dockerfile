@@ -7,7 +7,7 @@ WORKDIR /app
 # Copy the JAR file into the container
 COPY target/spring-boot-2-jpa-with-hibernate-and-h2-0.0.1-SNAPSHOT.jar /app/spring-boot-2-jpa-with-hibernate-and-h2-0.0.1-SNAPSHOT.jar
 
-# Expose the port the application runs on
+# Expose the port the applications runs on
 EXPOSE 8080
 
 # Run the JAR file
