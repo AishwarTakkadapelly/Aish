@@ -10,5 +10,5 @@ COPY target/spring-boot-2-jpa-with-hibernate-and-h2-0.0.1-SNAPSHOT.jar /app/spri
 # Expose the port the applications runs on
 EXPOSE 8080
 
-# Run the JAR file
+# Run the JAR fileS
 ENTRYPOINT ["java", "-jar", "/app/spring-boot-2-jpa-with-hibernate-and-h2-0.0.1-SNAPSHOT.jar"]
