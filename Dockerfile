@@ -1,7 +1,7 @@
 # Use a base image with Java installed
 FROM openjdk:17-jdk-slim
 
-# Creates a directory for the applications
+# Creates a directory for the application
 WORKDIR /app
 
 # Copy the JAR file into the containerS
