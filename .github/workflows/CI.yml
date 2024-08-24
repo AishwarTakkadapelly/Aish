@@ -25,8 +25,14 @@ jobs:
     - name: Build with Maven
       run: mvn clean install
 
+    - name: Run Tests
+      run: mvn test
+
+    - name: Package application
+      run: mvn package
+
     - name: Build Docker image
-      run: docker build -t takkadapelly/springboot:latest .
+      run: docker build -t takkadapelly/springboot:${{ github.sha }} .
 
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
@@ -35,11 +41,11 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Push Docker image
-      run: docker push takkadapelly/springboot:latest
+      run: docker push takkadapelly/springboot:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    needs: build  # Ensures this job runs after 'build'
 
     steps:
     - name: Checkout code
@@ -65,21 +71,21 @@ jobs:
 
           # Pull Docker image and run container
           echo "Pulling Docker image..."
-          sudo docker pull takkadapelly/springboot:latest
+          sudo docker pull takkadapelly/springboot:${{ github.sha }}
 
           # Check if the container is running
           if [ "$(sudo docker ps -q -f name=my-app)" ]; then
             echo "Stopping and removing existing container..."
-            sudo docker stop springboot
-            sudo docker rm springboot
+            sudo docker stop my-app
+            sudo docker rm my-app
           elif [ "$(sudo docker ps -aq -f name=my-app)" ]; then
             echo "Removing stopped container..."
-            sudo docker rm springboot
+            sudo docker rm my-app
           fi
 
           # Run new container
           echo "Running new container..."
-          sudo docker run -d -p 8080:8080 --name my-app takkadapelly/springboot:latest
+          sudo docker run -d -p 8080:8080 --name my-app takkadapelly/springboot:${{ github.sha }}
       timeout: 30s
       command_timeout: 10m
       debug: false
