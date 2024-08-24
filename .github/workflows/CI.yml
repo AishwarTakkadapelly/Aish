@@ -25,12 +25,6 @@ jobs:
     - name: Build with Maven
       run: mvn clean install
 
-   # - name: Run Tests
-   #   run: mvn test
-
-   # - name: Package application
-   #   run: mvn package
-
     - name: Build Docker image
       run: docker build -t takkadapelly/springboot:latest .
 
@@ -45,7 +39,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build  # Ensures deployment runs after build
+    needs: build
 
     steps:
     - name: Checkout code
@@ -66,7 +60,7 @@ jobs:
             sudo yum install -y docker
             sudo systemctl start docker
             sudo systemctl enable docker
-            sudo usermod -aG docker aishwar
+            sudo usermod -aG docker ${{ secrets.EC2_USER }}
           fi
 
           # Pull Docker image and run container
@@ -76,10 +70,9 @@ jobs:
           # Check if the container is running
           if [ "$(sudo docker ps -q -f name=my-app)" ]; then
             echo "Stopping and removing existing container..."
-            sudo docker stop my-app
-            sudo docker rm my-app
+            sudo docker stop springboot
+            sudo docker rm springboot
           elif [ "$(sudo docker ps -aq -f name=my-app)" ]; then
-            # If the container exists but is not running
             echo "Removing stopped container..."
             sudo docker rm springboot
           fi
